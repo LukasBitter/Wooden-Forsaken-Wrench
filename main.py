@@ -57,7 +57,8 @@ def loop(img):
             img[dst>0.01*dst.max()]=[0,0,255]
 
         elif corner == 2:
-            sift = cv2.SIFT()
+            #sift = cv2.SIFT_create()
+            sift = cv2.xfeatures2d.SIFT_create()
             kp = sift.detect(gray,None)
 
             img=cv2.drawKeypoints(gray,kp)

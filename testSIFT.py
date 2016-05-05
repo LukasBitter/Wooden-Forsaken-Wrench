@@ -5,7 +5,7 @@ from os import listdir
 from os.path import isfile, join, isdir
 
 # Initiate SIFT detector
-orb = cv2.ORB()
+orb = cv2.SIFT()
 bf = cv2.BFMatcher()
 
 #==========================================================
@@ -13,14 +13,14 @@ bf = cv2.BFMatcher()
 #==========================================================
 
 # SIFT sur le fichier source
-source = cv2.imread("./leafs/01/RGB/1. Quercus suber/iPAD2_C01_EX01.jpg")
+source = cv2.imread("./leafs/01/RGB/3. Populus nigra/iPAD2_C03_EX03.jpg")
 kpSource, desSource = orb.detectAndCompute(source,None)
 
 #==========================================================
 #   GROSSE BOUCLE MOCHE
 #==========================================================
 
-model_path = "./leafs/01/RGB/1. Quercus suber/"
+model_path = "./test/"
 # Get all sample of category
 file_in_model_dir = [f for f in listdir(model_path) if isfile(join(model_path, f))]
 
@@ -40,11 +40,11 @@ for file_name in file_in_model_dir:
     for list_m in matches:
         previous_distance = None
         for distance in list_m:
-            if previous_distance == None:
-                previous_distance = distance
-            else:
+            if previous_distance != None:
                 if previous_distance.distance < 0.75*distance.distance:
                     good.append([previous_distance])
+                    
+            previous_distance = distance
 
     count = count+1
     print "matching level : ", len(good) # plus y a de match positif, mieux c'est

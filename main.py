@@ -91,6 +91,7 @@ def loop(img):
             gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
             sift = cv2.SIFT(param*20)
             kp = sift.detect(gray,None)
+            print 'kp len: ', len(kp)
 
             img=cv2.drawKeypoints(gray,kp, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
@@ -101,6 +102,7 @@ def loop(img):
             gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
             surf = cv2.SURF(param*20)
             kp = surf.detect(gray,None)
+            print 'kp len: ', len(kp)
 
             img=cv2.drawKeypoints(gray,kp, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
@@ -114,6 +116,7 @@ def loop(img):
 
             # find the keypoints with ORB
             kp = orb.detect(img,None)
+            print 'kp len: ', len(kp)
 
             # compute the descriptors with ORB
             kp, des = orb.compute(img, kp)

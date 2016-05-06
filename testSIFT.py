@@ -14,6 +14,8 @@ bf = cv2.BFMatcher()
 
 # SIFT sur le fichier source
 source = cv2.imread("./leafs/01/RGB/3. Populus nigra/iPAD2_C03_EX03.jpg")
+source = cv2.cvtColor(source,cv2.COLOR_BGR2GRAY)
+source = np.float32(source)
 kpSource, desSource = orb.detectAndCompute(source,None)
 
 #==========================================================
@@ -32,6 +34,8 @@ for file_name in file_in_model_dir:
 
     # SIFT sur le fichier X
     model = cv2.imread(model_path+file_name,0)
+    model = cv2.cvtColor(model ,cv2.COLOR_BGR2GRAY)
+    model = np.float32(model)
     kpX, desX = orb.detectAndCompute(model,None)
 
     # Comparaison entre la source et X
@@ -43,7 +47,7 @@ for file_name in file_in_model_dir:
             if previous_distance != None:
                 if previous_distance.distance < 0.75*distance.distance:
                     good.append([previous_distance])
-                    
+
             previous_distance = distance
 
     count = count+1

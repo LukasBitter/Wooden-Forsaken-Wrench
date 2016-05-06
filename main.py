@@ -8,10 +8,8 @@ from matplotlib import pyplot as plt
 
 numHarrisCorner = 1
 numSIFT = 2
-numORB = 3
-
-
-
+numSURF = 3
+numORB = 4
 
 # find Harris corners
 def harrisCorner(img, gray):
@@ -42,7 +40,7 @@ def loop(img):
     selFeature = 'Feature selection' #'0 : OFF \n1 : HARRIS \n2 : SIFT'
     paramFeature = 'Feature parameter'
     cv2.createTrackbar(selFeature, 'Image',0,5,nothing)
-    cv2.createTrackbar(paramFeature, 'Image',0,14,nothing)
+    cv2.createTrackbar(paramFeature, 'Image',0,30,nothing)
     msg = 'Original Image'
 
 
@@ -74,7 +72,10 @@ def loop(img):
             current = numHarrisCorner
             img = src.copy()
 
-            dst = cv2.cornerHarris(gray,2,2*param-1,0.04)
+            harrisParam = 31 if 2*param-1 > 30 else 2*param-1
+            print('para: ', param, ' / harrisParam: ', harrisParam)
+
+            dst = cv2.cornerHarris(gray,2,harrisParam,0.04)
 
             #result is dilated for marking the corners, not important
             dst = cv2.dilate(dst,None)
@@ -88,8 +89,18 @@ def loop(img):
             img = src.copy()
 
             gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-            sift = cv2.SIFT()
+            sift = cv2.SIFT(param*20)
             kp = sift.detect(gray,None)
+
+            img=cv2.drawKeypoints(gray,kp, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+
+        elif (feature == numSURF and not current == numSURF):
+            current = numSURF
+            img = src.copy()
+
+            gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+            surf = cv2.SURF(param*20)
+            kp = surf.detect(gray,None)
 
             img=cv2.drawKeypoints(gray,kp, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
@@ -99,7 +110,7 @@ def loop(img):
             img = src.copy()
 
             # Initiate STAR detector
-            orb = cv2.ORB()
+            orb = cv2.ORB(param*20)
 
             # find the keypoints with ORB
             kp = orb.detect(img,None)

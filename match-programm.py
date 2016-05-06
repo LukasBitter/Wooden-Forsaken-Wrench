@@ -22,6 +22,21 @@ svm = None
 list_categories = None
 backup_path = "./.svm_backup"
 
+
+#==========================================================
+#   IMAGE PREPROCESSING
+#
+#   all methods in this section have to respect the
+#   given parameter signature:
+#
+#   input   : a image file
+#   output  : a image file
+#
+#==========================================================
+
+def to_gray_scale(img):
+    return 0.0
+
 #==========================================================
 #   ALGORITHM METHOD
 #
@@ -33,11 +48,11 @@ backup_path = "./.svm_backup"
 #
 #==========================================================
 
-def algo_number_1(img):
-    print ""
-    print img
-    print ""
+def example_algo_return_float(img):
     return 0.0
+
+def example_algo_return__fixed_size_array_float(img):
+    return [0.0, 0.0, 0.0] # MUST ALWAYS RETURN THE SAME LIST SIZE
 
 def algo_number_2(img):
     return 0.0
@@ -77,8 +92,11 @@ class SVM(StatModel):
 
 def create_vector(img):
     vect = []
-    vect.append(algo_number_1(img))
-    vect.append(algo_number_2(img))
+    # exemple
+    vect.extend(example_algo_return_float(img))
+    vect.append(example_algo_return__fixed_size_array_float(img))
+
+
     vect.append(algo_number_3(img))
     return vect
 

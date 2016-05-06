@@ -34,6 +34,9 @@ backup_path = "./.svm_backup"
 #==========================================================
 
 def algo_number_1(img):
+    print ""
+    print img
+    print ""
     return 0.0
 
 def algo_number_2(img):

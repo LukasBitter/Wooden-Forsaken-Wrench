@@ -5,7 +5,7 @@ from os import listdir
 from os.path import isfile, join, isdir
 
 # Initiate SIFT detector
-orb = cv2.SIFT()
+orb = cv2.ORB(600)
 bf = cv2.BFMatcher()
 
 #==========================================================
@@ -13,16 +13,14 @@ bf = cv2.BFMatcher()
 #==========================================================
 
 # SIFT sur le fichier source
-source = cv2.imread("./leafs/01/RGB/3. Populus nigra/iPAD2_C03_EX03.jpg")
-source = cv2.cvtColor(source,cv2.COLOR_BGR2GRAY)
-source = np.float32(source)
+source = cv2.imread("../leafs/01/RGB/3. Populus nigra/iPAD2_C03_EX01.jpg")
 kpSource, desSource = orb.detectAndCompute(source,None)
 
 #==========================================================
 #   GROSSE BOUCLE MOCHE
 #==========================================================
 
-model_path = "./test/"
+model_path = "./data_model_test/"
 # Get all sample of category
 file_in_model_dir = [f for f in listdir(model_path) if isfile(join(model_path, f))]
 
@@ -34,8 +32,6 @@ for file_name in file_in_model_dir:
 
     # SIFT sur le fichier X
     model = cv2.imread(model_path+file_name,0)
-    model = cv2.cvtColor(model ,cv2.COLOR_BGR2GRAY)
-    model = np.float32(model)
     kpX, desX = orb.detectAndCompute(model,None)
 
     # Comparaison entre la source et X

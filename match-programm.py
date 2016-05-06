@@ -35,7 +35,7 @@ backup_path = "./.svm_backup"
 #==========================================================
 
 def to_gray_scale(img):
-    return 0.0
+    return img
 
 #==========================================================
 #   ALGORITHM METHOD

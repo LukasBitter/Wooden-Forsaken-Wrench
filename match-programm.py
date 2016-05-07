@@ -35,7 +35,7 @@ backup_path = "./.svm_backup"
 #==========================================================
 
 def to_gray_scale(img):
-    return img
+    return img #TODO
 
 #==========================================================
 #   ALGORITHM METHOD
@@ -94,10 +94,10 @@ def create_vector(img):
     vect = []
     # exemple
     vect.extend(example_algo_return_float(img))
-    vect.append(example_algo_return__fixed_size_array_float(img))
-
-
-    vect.append(algo_number_3(img))
+    vect.extend(example_algo_return__fixed_size_array_float(img))
+    # TODO
+    vect.extend(algo_number_2(img))
+    vect.extend(algo_number_3(img))
     return vect
 
 def train_svm():

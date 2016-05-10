@@ -189,7 +189,6 @@ if __name__=='__main__':
     p = args.categories
     list_categories = [f for f in listdir(p) if isdir(join(p, f))]
 
-    print "PATHHHH", backup_path
     # Initalization of SVM
     svm = SVM()
     train_svm()

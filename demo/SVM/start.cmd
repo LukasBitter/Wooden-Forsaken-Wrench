@@ -1,7 +1,7 @@
-python ..\..\match-programm.py "../../tests/data_model_test/" "../../tests/same.JPG"
+python ..\..\match-programm.py "../../leafs/01/RGB" "../../tests/same.JPG"
 
 pause
 
-python ..\..\match-programm.py "../../tests/data_model_test/" "../../tests/close.JPG"
+python ..\..\match-programm.py "../../leafs/01/RGB" "../../tests/close.JPG"
 
 pause

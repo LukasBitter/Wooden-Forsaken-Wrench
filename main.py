@@ -3,6 +3,7 @@ __author__ = 'lukas.bitter'
 # -*- coding: utf-8 -*-
 import cv2
 import numpy as np
+import sys
 from matplotlib import pyplot as plt
 
 
@@ -123,7 +124,7 @@ def loop(img):
 
 
 if __name__ == '__main__':
-    img = cv2.imread("leafs/01/RGB/1. Quercus suber/iPAD2_C01_EX01.JPG")
+    img = cv2.imread(sys.argv[1])
     cv2.namedWindow('Image')
 
     loop(img)

@@ -3,6 +3,7 @@ import cv2, sys, os
 from matplotlib import pyplot as plt
 from os import listdir
 from os.path import isfile, join, isdir
+import sys
 
 # Initiate SIFT detector
 orb = cv2.ORB(600)
@@ -13,14 +14,14 @@ bf = cv2.BFMatcher()
 #==========================================================
 
 # SIFT sur le fichier source
-source = cv2.imread("../leafs/01/RGB/3. Populus nigra/iPAD2_C03_EX01.jpg")
+source = cv2.imread(sys.argv[1])
 kpSource, desSource = orb.detectAndCompute(source,None)
 
 #==========================================================
 #   GROSSE BOUCLE MOCHE
 #==========================================================
 
-model_path = "./data_model_test/"
+model_path = sys.argv[2]
 # Get all sample of category
 file_in_model_dir = [f for f in listdir(model_path) if isfile(join(model_path, f))]
 

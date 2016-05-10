@@ -132,22 +132,23 @@ class SVM(StatModel):
 #creation du vecteur de categorisation.
 def create_vector(img):
     vect = []
-    ret,thresh = cv2.threshold(img,127,255,0)
-    bwImage = cv2.cvtColor(np.array(img, dtype = np.float32),cv2.COLOR_RGB2GRAY)
-    contours,hierarchy = cv2.findContours(thresh, 1, 2)
-    cnt = contours[0]
-    find_moments(cnt)
+    im = cv2.imread('test.jpeg')
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray,(5,5),0)
+    thresh = cv2.adaptiveThreshold(blur,255,1,1,11,2)
 
-    vect.extend(find_moments(cnt))
+    contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
+    cnt = contours[0]
+
+    #vect.extend(find_moments(cnt))
     vect.extend(find_area(cnt))
     vect.extend(find_boundingRect(cnt))
     vect.extend(find_contour(cnt))
     vect.extend(find_mimimumEnclosingCircle(cnt))
     vect.extend(find_permimeter(cnt))
     vect.extend(find_aspectRation(cnt))
-    vect.extend(find_solidity(cnt))
+    #vect.extend(find_solidity(cnt))
     vect.extend(find_extent(cnt))
-    print vect
     return vect
 
 def train_svm():

@@ -1,34 +1,14 @@
-__author__ = 'lukas.bitter'
+__author__ = 'lukas.bitter', 'Nicloas Gonin', 'Nils Ryter'
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
 
-
+# Definition of feature postition on the trackbar:
 numHarrisCorner = 1
 numSIFT = 2
 numSURF = 3
 numORB = 4
-
-# find Harris corners
-def harrisCorner(img, gray):
-    gray = np.float32(gray)
-    dst = cv2.cornerHarris(gray,2,3,0.04)
-    dst = cv2.dilate(dst,None)
-    ret, dst = cv2.threshold(dst,0.01*dst.max(),255,0)
-    dst = np.uint8(dst)
-    #cv2.imshow('dst',img)
-    if cv2.waitKey(0) & 0xff == 27:
-        cv2.destroyAllWindows()
-
-def findSift(img):
-    gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-
-    sift = cv2.xfeatures2d.SIFT()
-    kp = sift.detect(gray,None)
-    img=cv2.drawKeypoints(gray,kp)
-    cv2.imwrite('sift_keypoints.jpg',img)
 
 def nothing(x):
     pass
@@ -36,13 +16,11 @@ def nothing(x):
 def loop(img):
     src = img.copy()
 
-    # create switch for ON/OFF harris functionality
+    # create trackbars for feature selection
     selFeature = 'Feature selection' #'0 : OFF \n1 : HARRIS \n2 : SIFT'
     paramFeature = 'Feature parameter'
-    cv2.createTrackbar(selFeature, 'Image',0,5,nothing)
+    cv2.createTrackbar(selFeature, 'Image',0,4,nothing)
     cv2.createTrackbar(paramFeature, 'Image',0,30,nothing)
-    msg = 'Original Image'
-
 
     #grayscale image
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -56,22 +34,26 @@ def loop(img):
         if k == 27:
             break
 
-        # get current positions of  trackbars
+        # get current positions of trackbars
         feature = cv2.getTrackbarPos(selFeature,'Image')
         newParam = cv2.getTrackbarPos(paramFeature,'Image')
 
+        # Detection if parameter trackbar has changed or not
         if newParam != param:
             param = newParam
             current = None
 
+        # Position 0 of feature trackbar => original image
         if feature == 0:
             current = None
             img = src.copy()
 
+        # Position 1 of feature trackbar => Harris Corner detection
         elif (feature == numHarrisCorner and not current == numHarrisCorner):
             current = numHarrisCorner
             img = src.copy()
 
+            # Max param value should be 31
             harrisParam = 31 if 2*param-1 > 30 else 2*param-1
             print('para: ', param, ' / harrisParam: ', harrisParam)
 
@@ -84,6 +66,7 @@ def loop(img):
             img[dst>0.01*dst.max()]=[0,0,255]
 
 
+        # Position 2 of feature trackbar => SIFT detection
         elif (feature == numSIFT and not current == numSIFT):
             current = numSIFT
             img = src.copy()
@@ -95,6 +78,7 @@ def loop(img):
 
             img=cv2.drawKeypoints(gray,kp, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
+        # Position 3 of feature trackbar => SURF detection
         elif (feature == numSURF and not current == numSURF):
             current = numSURF
             img = src.copy()
@@ -107,6 +91,7 @@ def loop(img):
             img=cv2.drawKeypoints(gray,kp, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
 
+        # Position 4 of feature trackbar => ORB detection
         elif (feature == numORB and not current == numORB):
             current = numORB
             img = src.copy()

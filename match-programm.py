@@ -37,6 +37,15 @@ backup_path = "./.svm_backup"
 def to_gray_scale(img):
     return img #TODO
 
+def get_contours(img):
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray,(5,5),0)
+    thresh = cv2.adaptiveThreshold(blur,255,1,1,11,2)
+
+    contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
+    cnt = contours[0]
+    return cnt
+
 #==========================================================
 #   ALGORITHM METHOD
 #
@@ -132,14 +141,9 @@ class SVM(StatModel):
 #creation du vecteur de categorisation.
 def create_vector(img):
     vect = []
-    im = cv2.imread('test.jpeg')
-    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    blur = cv2.GaussianBlur(gray,(5,5),0)
-    thresh = cv2.adaptiveThreshold(blur,255,1,1,11,2)
 
-    contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
-    cnt = contours[0]
-
+    #Vector based on contours
+    cnt = get_contours(img)
     #vect.extend(find_moments(cnt))
     vect.extend(find_area(cnt))
     vect.extend(find_boundingRect(cnt))
@@ -149,6 +153,7 @@ def create_vector(img):
     vect.extend(find_aspectRation(cnt))
     #vect.extend(find_solidity(cnt))
     vect.extend(find_extent(cnt))
+
     return vect
 
 def train_svm():
@@ -174,13 +179,13 @@ def train_svm():
     svm.train(training_set, training_categories)
 
 def find_single_image(img):
-    return find_images([find_images])
+    return find_images([img])
 
 def find_images(img_array):
     tab_vect = [create_vector(i) for i in img_array]
     input_set = np.array(tab_vect, dtype = np.float32)
     result_set = svm.predict(input_set)
-    return[list_categories[int(i)] for i in result_set]
+    return [list_categories[int(i)] for i in result_set]
 
 #==========================================================
 #   MAIN

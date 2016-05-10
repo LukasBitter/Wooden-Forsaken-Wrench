@@ -48,17 +48,56 @@ def to_gray_scale(img):
 #
 #==========================================================
 
-def example_algo_return_float(img):
-    return 0.0
+def find_moments(cnt):
+    M = cv2.moments(cnt)
+    cx = int(M['m10']/M['m00'])
+    cy = int(M['m01']/M['m00'])
+    return [cx, cy]
 
-def example_algo_return__fixed_size_array_float(img):
-    return [0.0, 0.0, 0.0] # MUST ALWAYS RETURN THE SAME LIST SIZE
+def find_area(cnt):
+    #Contour Area
+    area = cv2.contourArea(cnt)
+    return [area]
 
-def algo_number_2(img):
-    return 0.0
+def find_permimeter(cnt):
+    #Contour Perimeter
+    perimeter = cv2.arcLength(cnt,True)
+    return [perimeter]
 
-def algo_number_3(img):
-    return 0.0
+def find_contour(cnt):
+    #Contour Approximation
+    epsilon = 0.1*cv2.arcLength(cnt,True)
+    return [epsilon]
+
+def find_boundingRect(cnt):
+    #Bounding Rectangle
+        #Straight Bounding Rectangle
+    x,y,w,h = cv2.boundingRect(cnt)
+    return [x,y,w,h]
+
+def find_mimimumEnclosingCircle(cnt):
+    #Minimum Enclosing Circle
+    (x,y),radius = cv2.minEnclosingCircle(cnt)
+    return [x,y,radius]
+
+def find_aspectRation(cnt):
+    x,y,w,h = cv2.boundingRect(cnt)
+    aspect_ratio = float(w)/h
+    return [aspect_ratio]
+
+def find_extent(cnt):
+    area = cv2.contourArea(cnt)
+    x,y,w,h = cv2.boundingRect(cnt)
+    rect_area = w*h
+    extent = float(area)/rect_area
+    return [extent]
+
+def find_solidity(cnt):
+    area = cv2.contourArea(cnt)
+    hull = cv2.convexHull(cnt)
+    hull_area = cv2.contourArea(hull)
+    solidity = float(area)/hull_area
+    return [solidity]
 
 #==========================================================
 #   CLASSES
@@ -90,14 +129,25 @@ class SVM(StatModel):
 #   METHODS
 #==========================================================
 
+#creation du vecteur de categorisation.
 def create_vector(img):
     vect = []
-    # exemple
-    vect.extend(example_algo_return_float(img))
-    vect.extend(example_algo_return__fixed_size_array_float(img))
-    # TODO
-    vect.extend(algo_number_2(img))
-    vect.extend(algo_number_3(img))
+    ret,thresh = cv2.threshold(img,127,255,0)
+    bwImage = cv2.cvtColor(np.array(img, dtype = np.float32),cv2.COLOR_RGB2GRAY)
+    contours,hierarchy = cv2.findContours(thresh, 1, 2)
+    cnt = contours[0]
+    find_moments(cnt)
+
+    vect.extend(find_moments(cnt))
+    vect.extend(find_area(cnt))
+    vect.extend(find_boundingRect(cnt))
+    vect.extend(find_contour(cnt))
+    vect.extend(find_mimimumEnclosingCircle(cnt))
+    vect.extend(find_permimeter(cnt))
+    vect.extend(find_aspectRation(cnt))
+    vect.extend(find_solidity(cnt))
+    vect.extend(find_extent(cnt))
+    print vect
     return vect
 
 def train_svm():
@@ -151,8 +201,10 @@ if __name__=='__main__':
 
     # Initalization of SVM
     svm = SVM()
+    train_svm()
+    svm.save(backup_path)
     if(args.clean_svm or not isfile(backup_path)):
-        print "regenerate the SVM..."
+        print ("regenerate the SVM...")
         train_svm()
         svm.save(backup_path)
     elif(isfile(backup_path)):
@@ -163,13 +215,13 @@ if __name__=='__main__':
     if(isfile(p)):
         img = cv2.imread(args.picture)
         result = find_single_image(img)
-        print zip([basename(p)], result)
+        print (zip([basename(p)], result))
 
     elif(isdir(p)):
         list_pictures_name = [f for f in listdir(p) if isfile(join(p, f))]
         list_pictures_data = [cv2.imread(p+"/"+f) for f in list_pictures_name]
         result = find_images(list_pictures_data)
-        print zip(list_pictures_name, result)
+        print(zip(list_pictures_name, result))
 
     else:
-        print "Error in source pictures path/file"
+        print("Error in source pictures path/file")

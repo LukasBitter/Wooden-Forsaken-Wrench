@@ -34,8 +34,6 @@ backup_path = "./.svm_backup"
 #
 #==========================================================
 
-def to_gray_scale(img):
-    return img #TODO
 
 def get_contours(img):
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -53,15 +51,10 @@ def get_contours(img):
 #   given parameter signature:
 #
 #   input   : a image file
-#   output  : a float
+#   output  : a list of float
 #
 #==========================================================
 
-def find_moments(cnt):
-    M = cv2.moments(cnt)
-    cx = int(M['m10']/M['m00'])
-    cy = int(M['m01']/M['m00'])
-    return [cx, cy]
 
 def find_area(cnt):
     #Contour Area
@@ -101,13 +94,6 @@ def find_extent(cnt):
     extent = float(area)/rect_area
     return [extent]
 
-def find_solidity(cnt):
-    area = cv2.contourArea(cnt)
-    hull = cv2.convexHull(cnt)
-    hull_area = cv2.contourArea(hull)
-    solidity = float(area)/hull_area
-    return [solidity]
-
 #==========================================================
 #   CLASSES
 #==========================================================
@@ -144,14 +130,12 @@ def create_vector(img):
 
     #Vector based on contours
     cnt = get_contours(img)
-    #vect.extend(find_moments(cnt))
     vect.extend(find_area(cnt))
     vect.extend(find_boundingRect(cnt))
     vect.extend(find_contour(cnt))
     vect.extend(find_mimimumEnclosingCircle(cnt))
     vect.extend(find_permimeter(cnt))
     vect.extend(find_aspectRation(cnt))
-    #vect.extend(find_solidity(cnt))
     vect.extend(find_extent(cnt))
 
     return vect
